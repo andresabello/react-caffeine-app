@@ -29,7 +29,10 @@ class CaffeineController extends Controller
            return CaffeineDrink::find($drink['id']);
         });
 
-        $totalCaffeine = $drinkCollection->sum('level');
+        $totalCaffeine = $drinkCollection->sum(function ($drink) {
+            return $drink['level'] * $drink['quantity'];
+        });
+        
         $remainingAvailableCaffeine = $this->safeCaffeineLevel - $totalCaffeine;
 
         if ($remainingAvailableCaffeine <= 0) {
