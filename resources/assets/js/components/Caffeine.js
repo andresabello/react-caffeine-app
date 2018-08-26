@@ -21,6 +21,8 @@ export default class Caffeine extends Component {
             }],
             message: 'Sample Error',
             display: false,
+            currentLevel: 0,
+            remaining: 500
         }
 
         this.addDrink = this.addDrink.bind(this)
@@ -57,15 +59,11 @@ export default class Caffeine extends Component {
     }
 
     processDrinks(newDrink = false) {
-        const token = document.getElementById('user-token')
         const selectedDrinks = this.state.selectedDrinks
 
-        if (token) {
-            window.axios.defaults.headers.common['Authorization'] = 'Bearer ' + token.value;
-        }
-
         axios.post('/api/drinks/process', {
-            selected_drinks: selectedDrinks
+            selected_drinks: selectedDrinks,
+            api_token: document.getElementById('user-token').value
         }).then((response) => {
 
             if (newDrink) {
@@ -77,22 +75,28 @@ export default class Caffeine extends Component {
             }
 
             this.setState({
-                selectedDrinks: response.data.selected_drinks
+                selectedDrinks: response.data.selected_drinks,
+                currentLevel: response.data.total_caffeine
             })
+
         }).catch(({response}) => {
             let message = ''
             if (response.data.errors) {
                 let errors = Object.keys(response.data.errors).map(i => response.data.errors[i])
 
-                for (let i=0, l=errors.length; i<l; i++){
-                    if (errors[i] instanceof Array){
+                for (let i = 0, l = errors.length; i < l; i++) {
+                    if (errors[i] instanceof Array) {
                         errors[i] = errors[i].join("`");
                     }
                 }
 
                 message = errors.join('`')
-            }else{
+            } else {
                 message = response.data.message
+                this.setState({
+                    currentLevel: response.data.total_caffeine,
+                    remaining: response.data.remaining,
+                })
             }
 
             this.setState({
@@ -101,7 +105,7 @@ export default class Caffeine extends Component {
             })
 
             setTimeout(
-                function() {
+                function () {
                     this.setState({display: false});
                 }.bind(this), 3000
             )
@@ -126,7 +130,8 @@ export default class Caffeine extends Component {
 
         const drinks = this.state.drinks
         const options = this.state.selectedDrinks.map((drink, index) =>
-            <DrinkOption drink={drink} drinks={drinks} key={index} onDrinkAdded={this.drinkUpdated} onDrinkRemoved={this.removeDrink} id={index}/>
+            <DrinkOption drink={drink} drinks={drinks} key={index} onDrinkAdded={this.drinkUpdated}
+                         onDrinkRemoved={this.removeDrink} id={index}/>
         )
 
         return (
@@ -154,6 +159,10 @@ export default class Caffeine extends Component {
                                         </div>
                                     </div>
                                 </form>
+                            </div>
+                            <div className="card-footer">
+                                <p className="has-success">Current Caffeine Level {this.state.currentLevel}</p>
+                                <p className="has-danger">Remaining Allowed Caffeine {this.state.remaining}</p>
                             </div>
                         </div>
                     </div>

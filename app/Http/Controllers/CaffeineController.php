@@ -32,11 +32,15 @@ class CaffeineController extends Controller
         $totalCaffeine = $drinkCollection->sum(function ($drink) {
             return $drink['level'] * $drink['quantity'];
         });
-        
+
         $remainingAvailableCaffeine = $this->safeCaffeineLevel - $totalCaffeine;
 
         if ($remainingAvailableCaffeine <= 0) {
-            return response()->json(['message' => 'Exceeded safe levels of caffeine ' . $this->safeCaffeineLevel], 422);
+            return response()->json([
+                'message' => 'Exceeded safe levels of caffeine ' . $this->safeCaffeineLevel,
+                'remaining' => $remainingAvailableCaffeine,
+                'total_caffeine' => $totalCaffeine,
+            ], 422);
         }
 
         return response()->json([
