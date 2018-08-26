@@ -17,7 +17,8 @@ export default class Caffeine extends Component {
                 id: 1,
                 name: 'Monster Ultra Sunrise',
                 quantity: 0,
-                index: 0
+                index: 0,
+                level: 75
             }],
             message: 'Sample Error',
             display: false,
@@ -28,7 +29,6 @@ export default class Caffeine extends Component {
         this.addDrink = this.addDrink.bind(this)
         this.removeDrink = this.removeDrink.bind(this)
         this.drinkUpdated = this.drinkUpdated.bind(this)
-
     }
 
     componentDidMount() {
@@ -69,7 +69,8 @@ export default class Caffeine extends Component {
                 response.data.selected_drinks.push({
                     id: 1,
                     name: 'Monster Ultra Sunrise',
-                    quantity: 0
+                    quantity: 0,
+                    level: 75
                 })
             }
 
@@ -110,11 +111,6 @@ export default class Caffeine extends Component {
                 }.bind(this), 3000
             )
         })
-    }
-
-    handleSubmit(event) {
-        alert('Your favorite flavor is: ' + this.state.selectedDrinks.toString())
-        event.preventDefault()
     }
 
     render() {

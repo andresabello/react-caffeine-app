@@ -13,7 +13,6 @@ export default class DrinkOption extends Component {
         this.onChangeDrink = this.onChangeDrink.bind(this)
 
         this.state = {
-            drink: {},
             quantity: 0
         }
     }
@@ -38,7 +37,7 @@ export default class DrinkOption extends Component {
             quantity: newQuantity
         })
 
-        this.add(this.state.drink, newQuantity)
+        this.add(this.props.drink, newQuantity)
     }
 
     add(drink, quantity) {
@@ -55,7 +54,7 @@ export default class DrinkOption extends Component {
     }
 
     render() {
-        const selectedDrink = this.state.drink
+        const selectedDrink = this.props.drink
         const quantity = this.state.quantity
 
         const listItems = this.props.drinks.map((drink) =>
