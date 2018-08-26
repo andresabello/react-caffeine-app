@@ -27,7 +27,6 @@ export default class Caffeine extends Component {
 
         this.addDrink = this.addDrink.bind(this)
         this.removeDrink = this.removeDrink.bind(this)
-        this.resetDrinks = this.resetDrinks.bind(this)
         this.drinkUpdated = this.drinkUpdated.bind(this)
 
     }
@@ -76,7 +75,8 @@ export default class Caffeine extends Component {
 
             this.setState({
                 selectedDrinks: response.data.selected_drinks,
-                currentLevel: response.data.total_caffeine
+                currentLevel: response.data.total_caffeine,
+                remaining: 500 - response.data.total_caffeine
             })
 
         }).catch(({response}) => {
@@ -112,15 +112,6 @@ export default class Caffeine extends Component {
         })
     }
 
-    resetDrinks() {
-        this.processDrinks([{
-            id: 1,
-            name: 'Monster Ultra Sunrise',
-            quantity: 1,
-            index: 0
-        }])
-    }
-
     handleSubmit(event) {
         alert('Your favorite flavor is: ' + this.state.selectedDrinks.toString())
         event.preventDefault()
@@ -150,11 +141,6 @@ export default class Caffeine extends Component {
                                         <div className="col-sm-8">
                                             <button type="button" className="btn btn-success btn-block"
                                                     onClick={this.addDrink}>Add Current Drink
-                                            </button>
-                                        </div>
-                                        <div className="col-sm-4">
-                                            <button type="button" className="btn btn-danger btn-block"
-                                                    onClick={this.resetDrinks}>Reset All
                                             </button>
                                         </div>
                                     </div>
